@@ -42,6 +42,8 @@ emcc rasm.c \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s INITIAL_MEMORY=33554432 \
     -s TOTAL_STACK=32MB \
+    -s STACK_OVERFLOW_CHECK=2 \
+    -s ASSERTIONS=1 \
     -s FILESYSTEM=1 \
     -s EXPORTED_RUNTIME_METHODS='["FS","callMain"]' \
     -s MODULARIZE=1 \
