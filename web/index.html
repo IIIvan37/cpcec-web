@@ -127,6 +127,37 @@
             fill: currentColor;
         }
 
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .language-selector label {
+            color: var(--text-color);
+            white-space: nowrap;
+        }
+
+        .language-selector select {
+            background: var(--panel-color);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .language-selector select:focus {
+            outline: none;
+            border-color: var(--highlight-color);
+        }
+
         .status-bar {
             background: var(--panel-color);
             padding: 0.5rem 1rem;
@@ -426,6 +457,16 @@
                     </svg>
                     Load File
                 </button>
+
+                <!-- Language selector -->
+                <div class="language-selector">
+                    <label for="lang-select">Language:</label>
+                    <select id="lang-select" class="btn">
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+
                 <button class="btn" id="btn-reset" title="Reset the CPC">
                     <svg viewBox="0 0 24 24">
                         <path
@@ -526,6 +567,19 @@
         // Module configuration for Emscripten
         var Module = {
             canvas: document.getElementById('canvas'),
+
+            // Pass language parameter to the emulator
+            arguments: (function () {
+                var args = [];
+                var urlParams = new URLSearchParams(window.location.search);
+                var lang = urlParams.get('lang');
+                if (lang === 'fr') {
+                    args.push('-lf');
+                } else {
+                    args.push('-le');
+                }
+                return args;
+            })(),
 
             // Status handling
             setStatus: function (text) {
@@ -628,6 +682,14 @@
                 reader.readAsArrayBuffer(file);
             }
             e.target.value = ''; // Reset for same file selection
+        });
+
+        // Language selector event handler
+        document.getElementById('lang-select').addEventListener('change', function (e) {
+            var lang = e.target.value;
+            var url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
         });
 
         document.getElementById('btn-reset').addEventListener('click', function () {
@@ -797,6 +859,12 @@
 
         // Initial status
         Module.setStatus('Downloading...');
+        
+        // Initialize language selector
+        var urlParams = new URLSearchParams(window.location.search);
+        var currentLang = urlParams.get('lang') || 'en';
+        document.getElementById('lang-select').value = currentLang;
+        
         document.body.classList.add('loading');
     </script>
 
