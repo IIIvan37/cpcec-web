@@ -151,6 +151,10 @@ static void em_main_loop(void)
 
 // ===== JavaScript-callable functions ===== //
 
+/**
+ * Loads a file into the emulator.
+ * @param path The path to the file to load (relative to the ROM directory).
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_load_file(const char *path)
 {
@@ -160,12 +164,32 @@ void em_load_file(const char *path)
     }
 }
 
+/**
+ * Injects a file into the emulator without executing it.
+ * @param path The path to the file to load (relative to the ROM directory).
+ */
+EMSCRIPTEN_KEEPALIVE
+void em_inject_file(const char *path)
+{
+    if (path && *path) {
+        strcpy(session_parmtr, path);
+        any_load(session_parmtr, 0);
+    }
+}
+
+/**
+ * Resets the emulator to its initial state.
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_reset(void)
 {
     all_reset();
 }
 
+/**
+ * Toggles the pause state of the emulator.
+ * If the emulator is in debug mode, this function does nothing.
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_pause(void)
 {
@@ -175,18 +199,30 @@ void em_pause(void)
     }
 }
 
+/**
+ * Sets the emulation speed.
+ * @param fast If non-zero, enables fast mode; otherwise, runs at normal speed.
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_set_speed(int fast)
 {
     session_fast = fast ? 1 : 0;
 }
 
+/**
+ * Checks if the emulator is currently running.
+ * @return 1 if the emulator is initialized and not quit-requested, 0 otherwise.
+ */
 EMSCRIPTEN_KEEPALIVE
 int em_is_running(void)
 {
     return em_initialized && !em_quit_requested;
 }
 
+/**
+ * Gets the current status of the emulator as a string.
+ * @return A string describing the current status ("initializing", "stopped", "paused", "running", or "running (fast)").
+ */
 EMSCRIPTEN_KEEPALIVE
 const char* em_get_status(void)
 {
@@ -210,6 +246,10 @@ const char* em_get_status(void)
 // F0=0x0F, F1=0x0D, F2=0x0E, F3=0x05, F4=0x14, F5=0x0C, F6=0x04
 // F7=0x0A, F8=0x0B, F9=0x03, F.=0x07
 
+/**
+ * Presses a CPC key by its matrix code.
+ * @param cpc_code The CPC keyboard matrix code (0-127).
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_key_press(int cpc_code)
 {
@@ -219,6 +259,10 @@ void em_key_press(int cpc_code)
     }
 }
 
+/**
+ * Releases a CPC key by its matrix code.
+ * @param cpc_code The CPC keyboard matrix code (0-127).
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_key_release(int cpc_code)
 {
@@ -228,7 +272,10 @@ void em_key_release(int cpc_code)
     }
 }
 
-// Helper to press a CPC function key by number (0-9)
+/**
+ * Presses a CPC function key by number.
+ * @param fn_num The function key number (0-9, where 0=F0, 1=F1, etc.).
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_press_fn(int fn_num)
 {
@@ -250,6 +297,10 @@ void em_press_fn(int fn_num)
     }
 }
 
+/**
+ * Releases a CPC function key by number.
+ * @param fn_num The function key number (0-9, where 0=F0, 1=F1, etc.).
+ */
 EMSCRIPTEN_KEEPALIVE
 void em_release_fn(int fn_num)
 {

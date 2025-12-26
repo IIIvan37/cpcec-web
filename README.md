@@ -4,11 +4,11 @@
 
 This is a fork of [CPCEC](https://github.com/cpcitor/cpcec) by [CNGSOFT](http://cngsoft.no-ip.org/cpcec.htm) with added WebAssembly/browser support.
 
-## 🎮 Try it online
+## Try it online
 
 > **[Launch CPCEC-Web](https://cpcec-web.netlify.app/)** *(coming soon)*
 
-## ✨ What's new in this fork
+## What's new in this fork
 
 - **Browser support**: Run the emulator directly in modern web browsers (Chrome, Firefox, Safari, Edge)
 - **WebAssembly**: Compiled with Emscripten for near-native performance
@@ -16,7 +16,7 @@ This is a fork of [CPCEC](https://github.com/cpcitor/cpcec) by [CNGSOFT](http://
 - **Touch controls**: Basic support for mobile devices
 - **No installation**: Just open the webpage and play
 
-## 🛠️ Building for Web
+## Building for Web
 
 ### Prerequisites
 - [Emscripten SDK](https://emscripten.org/docs/getting_started/downloads.html)
@@ -35,7 +35,7 @@ source /path/to/emsdk/emsdk_env.sh
 # Open http://localhost:8080
 ```
 
-## 📁 Files added/modified
+## Files added/modified
 
 | File | Description |
 |------|-------------|
@@ -46,15 +46,70 @@ source /path/to/emsdk/emsdk_env.sh
 | `build-web.sh` | Build script |
 | `Makefile.emscripten` | Makefile for web builds |
 
-## 📜 License
+## JavaScript API
+
+The WebAssembly build exposes several functions that can be called from JavaScript to control the emulator. These functions are available on the `Module` object after the WASM module has loaded.
+
+### Emulator Control Functions
+
+| Function | Description |
+|----------|-------------|
+| `Module._em_load_file(path)` | Loads a file (`.dsk`, `.sna`, `.cdt`) into the emulator and runs it automatically |
+| `Module._em_inject_file(path)` | Injects a file into the emulator without executing it (for manual selection) |
+| `Module._em_reset()` | Resets the emulator to its initial state |
+| `Module._em_pause()` | Toggles pause/unpause (has no effect in debug mode) |
+| `Module._em_set_speed(fast)` | Sets emulation speed (0 = normal, 1 = fast) |
+| `Module._em_is_running()` | Returns 1 if emulator is running, 0 otherwise |
+| `Module._em_get_status()` | Returns current status as string ("initializing", "stopped", "paused", "running", "running (fast)") |
+
+### Keyboard Input Functions
+
+| Function | Description |
+|----------|-------------|
+| `Module._em_key_press(cpc_code)` | Presses a CPC key by its matrix code (0-127) |
+| `Module._em_key_release(cpc_code)` | Releases a CPC key by its matrix code (0-127) |
+| `Module._em_press_fn(fn_num)` | Presses a function key by number (0-9, where 0=F0, 1=F1, etc.) |
+| `Module._em_release_fn(fn_num)` | Releases a function key by number (0-9) |
+
+### CPC Keyboard Matrix Codes
+
+The CPC uses a matrix-based keyboard system. Common key codes include:
+- Function keys: F0=0x0F, F1=0x0D, F2=0x0E, F3=0x05, F4=0x14, F5=0x0C, F6=0x04, F7=0x0A, F8=0x0B, F9=0x03
+- Arrow keys: Up=0x00, Down=0x02, Left=0x08, Right=0x01
+- Space: 0x40
+- Return: 0x06
+
+### Usage Example
+
+```javascript
+// Load and run a game automatically
+Module._em_load_file("game.dsk");
+
+// Inject a disk without running it (for manual selection)
+Module._em_inject_file("game.dsk");
+
+// Reset the emulator
+Module._em_reset();
+
+// Press F1 (function key 1)
+Module._em_press_fn(1);
+setTimeout(() => Module._em_release_fn(1), 100);
+
+// Check if running
+if (Module._em_is_running()) {
+    console.log("Status:", Module._em_get_status());
+}
+```
+
+## License
 
 GPLv3 - Same as the original project.
 
-## 🙏 Credits
+## Credits
 
 - **Original CPCEC**: [CNGSOFT](http://cngsoft.no-ip.org/cpcec.htm) (Cesar Nicolas-Gonzalez)
 - **Git archive**: [cpcitor](https://github.com/cpcitor/cpcec)
-- **WebAssembly port**: [IIIvan37](https://github.com/IIIvan37)
+
 
 ---
 
