@@ -32,6 +32,9 @@ static void em_main_loop(void);
 #include "cpcec.c"
 #undef CPCEC_NO_MAIN
 
+// After including cpcec.c, we can modify the bios_system array
+// This will be done in main() based on language parameter
+
 // ===== Main loop for Emscripten (one frame per call) ===== //
 static void em_main_loop(void)
 {
@@ -370,6 +373,15 @@ int main(int argc, char *argv[])
                         break;
                     case 'j':
                         session_key2joy = 1;
+                        break;
+                    case 'l':
+                        // Language selection: 'l' followed by 'f' for French, 'e' for English
+                        if (argv[i][j] == 'f') {
+                            strcpy((char*)bios_system[2], "cpc6128_fr.rom");
+                        } else {
+                            strcpy((char*)bios_system[2], "cpc6128.rom");
+                        }
+                        j++;
                         break;
                     case 'J':
                         session_stick = 0;

@@ -27,7 +27,7 @@ OUTPUT_DIR="web"
 SOURCES="cpcec-web.c"
 
 # ROM files needed for the emulator
-ROMS="cpc464.rom cpc664.rom cpc6128.rom cpcplus.rom cpcados.rom"
+ROMS="cpc464.rom cpc664.rom cpc6128.rom cpc6128_fr.rom cpcplus.rom cpcados.rom"
 
 # Print with color
 print_status() {
