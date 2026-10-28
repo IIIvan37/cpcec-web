@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 # Project settings
 PROJECT="cpcec"
-OUTPUT_DIR="web"
+OUTPUT_DIR="${OUTPUT_DIR:-web}"
 SOURCES="cpcec-web.c"
 
 # ROM files needed for the emulator

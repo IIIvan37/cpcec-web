@@ -1591,7 +1591,11 @@ INLINE void session_byebye(void) // delete video+audio devices
 // operations summonned by session_listen() and session_update()
 
 #define session_title(s) SDL_SetWindowTitle(session_hwnd,(s)) // set the window caption
+#ifdef __EMSCRIPTEN__ // under ASYNCIFY, SDL_WaitEvent only wakes up on a canvas event, and the browser main loop already runs once per frame
+#define session_sleep() ((void)0)
+#else
 #define session_sleep() SDL_WaitEvent(NULL) // sleep till a system event happens
+#endif
 #define session_delay(i) SDL_Delay(i) // wait for approx `i` milliseconds
 #define audio_mustsync() ((void)0) // nothing to do here;
 #define audio_resyncme() // SDL2 handles the sync for us!
