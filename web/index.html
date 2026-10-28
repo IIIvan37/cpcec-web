@@ -568,6 +568,12 @@
         var Module = {
             canvas: document.getElementById('canvas'),
 
+            // Load cpcec.wasm and cpcec.data from the same build folder as the script tag below.
+            // Without it, cpcec.data comes from the page folder.
+            locateFile: function (path) {
+                return 'v2/' + path;
+            },
+
             // Pass language parameter to the emulator
             arguments: (function () {
                 var args = [];
@@ -868,8 +874,8 @@
         document.body.classList.add('loading');
     </script>
 
-    <!-- Load the Emscripten-generated JavaScript -->
-    <script async src="cpcec.js"></script>
+    <!-- Load the Emscripten-generated JavaScript. Keep its folder equal to the one in Module.locateFile. -->
+    <script async src="v2/cpcec.js"></script>
 </body>
 
 </html>

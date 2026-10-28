@@ -82,6 +82,15 @@ After building, you'll find these files in the `web/` directory:
 - `cpcec.wasm` - WebAssembly binary
 - `cpcec.data` - Preloaded ROM files
 
+## Versions
+
+`netlify.toml` serves every file with `Cache-Control: immutable` for one year. A browser that has a file in its cache never fetches it again. Thus a published build never changes at its URL:
+
+- The files at the root of `web/` are the first build. They stay frozen, because other sites load them.
+- Each new build goes into a new folder: `web/v2/`, then `web/v3/`, and so on.
+- A version folder holds only `cpcec.js`, `cpcec.wasm` and `cpcec.data`, without a page. Its folder URL (`/v2/`) answers 404.
+- `index.html` loads the latest build: `v2/cpcec.js` in its script tag, and `v2/` in `Module.locateFile` for `cpcec.wasm` and `cpcec.data`.
+
 ## Browser Support
 
 The emulator should work in modern browsers:
